@@ -38,7 +38,7 @@
                     <% for(let category of categories){ %>
                         <!-- Single Item -->
                         <li data-toggle="collapse" data-target="#<%= category %>" class="collapsed active">
-                            <a href="<%= category %>"><%= category %> product</a>
+                            <a href="/<%= category %>"><%= category %> product</a>
                         </li>
                     <% } %>
                     <% } %>
@@ -123,7 +123,7 @@
 
                                     <div class="collapse navbar-collapse align-items-start collapse" id="karl-navbar">
                                         <ul class="navbar-nav animated" id="nav">
-                                            <li class="nav-item active"><a class="nav-link" href="index.html">Home</a></li>
+                                            <li class="nav-item active"><a class="nav-link" href="/">Home</a></li>
                                             <li class="nav-item dropdown">
                                                 <a class="nav-link dropdown-toggle" href="#" id="karlDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Pages</a>
                                                 <div class="dropdown-menu" aria-labelledby="karlDropdown">
@@ -323,10 +323,9 @@
                         </div>
                         <div class="col-8">
                             <form action="/search">
-                                <input type="search" name="q" value="" id="">
+                                <input type="search" name="q" value="" id="search-id">
                                 <input type="submit" value="search">
-                            </form>
-                            
+                            </form>         
                         </div>
                     </div>
                     
@@ -545,12 +544,17 @@ Copyright &copy;<script>document.write(new Date().getFullYear());</script> All r
     <script src="js/plugins.js"></script>
     <!-- Active js -->
     <script src="js/active.js"></script>
-    <script>
-        // function pass(n){
-        //     var thumb = document.getElementById('thumbnailModel');
-        //     thumb.src = '';
-        // }
-    </script>
+    <script src="/socket.io/socket.io.js"></script>
+<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+<script>
+    $(function () {
+        var socket = io();
+        $("#search-id").change(function (e) {
+            e.preventDefault();
+            socket.emit('cambio_imagen_profile_edit', "Cambiando la imagen");
+        });
+    });
+</script>
 </body>
 
 </html>

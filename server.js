@@ -1,6 +1,18 @@
 import fetch from  'node-fetch';
 import express from 'express';
 const app = express();
+import { Server } from 'socket.io';
+import { createServer } from 'http';
+const server = createServer(app); 
+const io = new Server(server);
+
+io.on('connection', (socket) => {
+  console.log('a user connected');
+  socket.on('message', (msg) => {
+    // handle the msg here
+    console.log('message: ' + msg);
+  });
+});
 
 const port = process.env.PORT || 3001;
 app.set('view engine', 'ejs');
@@ -17,8 +29,9 @@ app.get(['/search', 'home/search'], async (req, response) => {
     }
         
 });
-app.get(['/:prod_id?', 'home/:prod_id?'], async (req, response) => {
-    let categories = await fetch('https://dummyjson.com/products/categories').then(res => res.json()).then(res => res.slice(0, 7));
+
+app.get('/:prod_id([0-9]{0,10})', async (req, response) => {
+    let categories = await fetch('https://dummyjson.com/products/categories').then(res => res.json()).then(res => res.slice(0, 9));
     if(req.params.prod_id) {
         fetch('https://dummyjson.com/products/'+req.params.prod_id)
         .then(res => res.json())
@@ -31,4 +44,10 @@ app.get(['/:prod_id?', 'home/:prod_id?'], async (req, response) => {
     }
 });
 
+app.get(['/:category'], async (req, response) => {
+    let categories = await fetch('https://dummyjson.com/products/categories').then(res => res.json()).then(res => res.slice(0, 9));
+    fetch('https://dummyjson.com/products/category/'+req.params.category)
+        .then(res => res.json())
+        .then(res => response.render('products', { products: res.products, categories: categories, currentCate: req.params.category }));     
+});
 
